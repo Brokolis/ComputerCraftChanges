@@ -152,6 +152,30 @@ function pagedTabulate( ... )
     tabulateCommon( true, ... )
 end
 
+local g_tLuaKeywords = {
+    [ "and" ] = true,
+    [ "break" ] = true,
+    [ "do" ] = true,
+    [ "else" ] = true,
+    [ "elseif" ] = true,
+    [ "end" ] = true,
+    [ "false" ] = true,
+    [ "for" ] = true,
+    [ "function" ] = true,
+    [ "if" ] = true,
+    [ "in" ] = true,
+    [ "local" ] = true,
+    [ "nil" ] = true,
+    [ "not" ] = true,
+    [ "or" ] = true,
+    [ "repeat" ] = true,
+    [ "return" ] = true,
+    [ "then" ] = true,
+    [ "true" ] = true,
+    [ "until" ] = true,
+    [ "while" ] = true,
+}
+
 local function serializeImpl( t, tTracking, sIndent )
     local sType = type(t)
     if sType == "table" then
@@ -175,7 +199,7 @@ local function serializeImpl( t, tTracking, sIndent )
             for k,v in pairs(t) do
                 if not tSeen[k] then
                     local sEntry
-                    if type(k) == "string" and string.match( k, "^[%a_][%a%d_]*$" ) then
+                    if type(k) == "string" and not g_tLuaKeywords[k] and string.match( k, "^[%a_][%a%d_]*$" ) then
                         sEntry = k .. " = " .. serializeImpl( v, tTracking, sSubIndent ) .. ",\n"
                     else
                         sEntry = "[ " .. serializeImpl( k, tTracking, sSubIndent ) .. " ] = " .. serializeImpl( v, tTracking, sSubIndent ) .. ",\n"

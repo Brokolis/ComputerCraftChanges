@@ -452,7 +452,12 @@ function os.loadAPI( _sPath )
     local fnAPI, err = loadfile( _sPath )
     if fnAPI then
         setfenv( fnAPI, tEnv )
-        fnAPI()
+        local ok, err = pcall( fnAPI )
+        if not ok then
+            printError( err )
+            tAPIsLoading[sName] = nil
+            return false
+        end
     else
         printError( err )
         tAPIsLoading[sName] = nil
